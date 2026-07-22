@@ -2,6 +2,18 @@ let deferTimeout = null;
 const token =
     'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMTkzNDg1Yjg4Zjk4NGNjM2ZkMWJkN2M2YzZkNmYzYiIsIm5iZiI6MTc4NDcwODMxNC40ODYsInN1YiI6IjZhNjA3Y2RhMmE0NTA0ZWVhN2EzZjc0MiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.C7-hZsT69R8u5CXFk19RswrT0ut2FHFRlbFmMKQuS4w';
 
+class PopularFilms {
+    constructor() {
+        this.$el = document.querySelector('#popular-films');
+    }
+
+    /* Append a movie class to the search result list in an open modal */
+    appendMovie(movie) {
+        const el = movie.render();
+        this.$el.querySelector('[data-output]').appendChild(el);
+    }
+}
+
 class SearchModal {
     constructor() {
         this.$el = document.querySelector('#search-modal');
@@ -83,8 +95,21 @@ async function search(query) {
     return (await response.json()).results;
 }
 
+async function fetchPopularFilms() {
+    const response = await fetch(`https://api.themoviedb.org/3/discover/movie`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const r = (await response.json()).results;
+
+    r.forEach((result) => list.appendMovie(new Movie(result)));
+}
+
 /* ------------------------- Main loop ------------------------- */
 const modal = new SearchModal();
+const list = new PopularFilms();
 
 document.querySelector('#close-search-modal').addEventListener('click', (e) => {
     e.preventDefault();
@@ -109,3 +134,5 @@ document.querySelector('#search-form').addEventListener('submit', async (e) => {
         results.forEach((result) => modal.appendMovie(new Movie(result)));
     }, 500);
 });
+
+fetchPopularFilms();

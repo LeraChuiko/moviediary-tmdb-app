@@ -33,13 +33,12 @@
                     <form id="search-form" class="w-full flex flex-col sm:flex-row gap-2 sm:gap-0 items-stretch max-w-xl">
                         <input
                             type="text"
-                            id="search-input"
                             placeholder="Welchen Film suchst du?"
                             class="w-full px-5 py-4 bg-black/40 text-white placeholder-zinc-400 border border-zinc-500 rounded-md sm:rounded-r-none focus:outline-none focus:border-white transition text-base"
                         />
                         <button
                             type="submit"
-                            class="bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-md sm:rounded-l-none hover:bg-red-700 transition flex items-center justify-center gap-2 whitespace-nowrap"
+                            class="cursor-pointer bg-blue-600 text-white font-bold text-lg px-8 py-4 rounded-md sm:rounded-l-none hover:bg-red-700 transition flex items-center justify-center gap-2 whitespace-nowrap"
                         >
                             Suchen <span class="text-xl">❯</span>
                         </button>
@@ -48,35 +47,46 @@
             </section>
 
             <!-----FILMS GRID ----->
-            <section class="mt-10">
+            <section id="popular-films" class="mt-10">
                 <h2 class="text-2xl font-semibold mb-6">Populäre Filme</h2>
 
-                <div id="movies-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                    <!----- Filmkarten werden hier mithilfe von JavaScript erstellt ----->
-                    <!----- Filmkart template, später weg machen-->
-                    <div class="group relative bg-zinc-900 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 flex flex-col justify-between">
-                        <div class="relative aspect-[2/3] w-full bg-zinc-800 flex items-center justify-center border-b border-zinc-800">
-                            <span class="text-zinc-500 text-xs font-medium uppercase tracking-wider">Filmposter</span>
-
-                            <span class="absolute top-2 left-2 bg-black/75 text-yellow-500 font-bold text-xs px-2 py-1 rounded border border-zinc-700 z-10"> ★ 8.2 </span>
-                        </div>
-
-                        <div class="p-4 flex flex-col justify-between flex-grow">
-                            <div class="flex justify-between items-start gap-2 mb-2">
-                                <h3 class="font-bold text-sm md:text-base text-zinc-100 line-clamp-2 group-hover:text-red-500 transition">Under Paris</h3>
-
-                                <!----- ★ ----->
-                                <button data-movie-id="12345" class="favorite-btn text-zinc-500 hover:text-yellow-400 text-xl transition-colors focus:outline-none" title="Zum Journal hinzufügen">
-                                    ★
-                                </button>
-                            </div>
-
-                            <span class="text-xs text-zinc-400">2024</span>
-                        </div>
-                    </div>
-                </div>
+                <div data-output class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6"></div>
             </section>
         </main>
+
+        <!----- SEARCH RESULT MODAL ----->
+        <aside id="search-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-zinc-900 rounded-lg border border-zinc-700 w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
+                <header class="flex justify-between items-center p-6 border-b border-zinc-700">
+                    <h2 class="text-2xl font-bold text-white">Suchergebnisse</h2>
+                    <button type="button" id="close-search-modal" class="cursor-pointer text-zinc-400 hover:text-white text-2xl transition">✕</button>
+                </header>
+
+                <div class="overflow-y-auto flex-1 p-6">
+                    <div data-output class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6"></div>
+                </div>
+            </div>
+        </aside>
+
+        <script id="movie-tmpl" type="text/html">
+            <a href="#" class="group relative bg-zinc-900 rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 flex flex-col justify-between">
+                <div class="relative aspect-[2/3] w-full bg-zinc-800 flex items-center justify-center border-b border-zinc-800">
+                    <img src="<% imageUrl %>" />
+                    <span class="absolute top-2 left-2 bg-black/75 text-yellow-500 font-bold text-xs px-2 py-1 rounded border border-zinc-700 z-10"> ★ <% rating %> </span>
+                </div>
+
+                <div class="p-4 flex flex-col justify-between flex-grow">
+                    <div class="flex justify-between items-start gap-2 mb-2">
+                        <h3 class="font-bold text-sm md:text-base text-zinc-100 line-clamp-2 group-hover:text-red-500 transition"><% title %></h3>
+
+                        <!----- ★ ----->
+                        <button data-movie-id="12345" class="favorite-btn text-zinc-500 hover:text-yellow-400 text-xl transition-colors focus:outline-none" title="Zum Journal hinzufügen">★</button>
+                    </div>
+
+                    <span class="text-xs text-zinc-400"><% releaseDate %></span>
+                </div>
+            </a>
+        </script>
 
         <!----- JS Main ----->
         <script src="main.js"></script>

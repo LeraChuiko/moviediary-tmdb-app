@@ -9,6 +9,7 @@ class SearchModal {
 
     close() {
         this.$el.classList.add('hidden');
+        this.clear();
     }
 
     open() {
@@ -19,6 +20,10 @@ class SearchModal {
     appendMovie(movie) {
         const el = movie.render();
         this.$el.querySelector('[data-output]').appendChild(el);
+    }
+
+    clear() {
+        this.$el.querySelector('[data-output]').innerHTML = '';
     }
 }
 

@@ -80,7 +80,14 @@
                         <h3 class="font-bold text-sm md:text-base text-zinc-100 line-clamp-2 group-hover:text-red-500 transition"><% title %></h3>
 
                         <!----- ★ ----->
-                        <button data-movie-id="12345" class="favorite-btn text-zinc-500 hover:text-yellow-400 text-xl transition-colors focus:outline-none" title="Zum Journal hinzufügen">★</button>
+                        <button
+                            data-toggle-favourite
+                            data-movie-id="<% id %>"
+                            class="favorite-btn text-zinc-500 hover:text-yellow-400 text-xl transition-colors focus:outline-none"
+                            title="Zum Journal hinzufügen"
+                        >
+                            <% favouriteIcon %>
+                        </button>
                     </div>
 
                     <span class="text-xs text-zinc-400"><% releaseDate %></span>

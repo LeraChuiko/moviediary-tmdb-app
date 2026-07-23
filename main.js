@@ -1,6 +1,11 @@
 let deferTimeout = null;
+const API_URL = 'https://api.themoviedb.org/3/movie/popular';
+const API_KEY = '3b7b9ad7ce39b703954fc5825edd755a';
 const token =
     'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMTkzNDg1Yjg4Zjk4NGNjM2ZkMWJkN2M2YzZkNmYzYiIsIm5iZiI6MTc4NDcwODMxNC40ODYsInN1YiI6IjZhNjA3Y2RhMmE0NTA0ZWVhN2EzZjc0MiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.C7-hZsT69R8u5CXFk19RswrT0ut2FHFRlbFmMKQuS4w';
+const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
+const POSTER_SIZE = 'w500';
+const FAVORITES_KEY = 'favorite_movies';
 
 class PopularFilms {
     constructor() {
@@ -52,7 +57,9 @@ class Movie {
             .replace('<% title %>', this.result.name ? this.result.name : this.result.title)
             .replace('<% imageUrl %>', 'https://image.tmdb.org/t/p/w440_and_h660_face' + this.result.poster_path)
             .replace('<% rating %>', this.rating)
-            .replace('<% releaseDate %>', this.year);
+            .replace('<% releaseDate %>', this.year)
+            .replace('<% id %>', this.result.id)
+            .replace('<% favouriteIcon %>', isFavourited(this.result.id) ? '♥' : '♡');
 
         return temp.firstChild.nextSibling;
     }
@@ -105,6 +112,53 @@ async function fetchPopularFilms() {
     const r = (await response.json()).results;
 
     r.forEach((result) => list.appendMovie(new Movie(result)));
+    createFavouritesListener();
+}
+
+/* ----------------------- Favourite handling ----------------------- */
+// get an array of saved movies
+function getFavorites() {
+    const data = localStorage.getItem(FAVORITES_KEY);
+    return data ? JSON.parse(data) : [];
+}
+
+function isFavourited(movieId) {
+    return getFavorites().includes(movieId.toString());
+}
+
+// add film-object
+function addToFavorites(movie) {
+    const favorites = getFavorites();
+    const exists = favorites.some((fav) => fav === movie);
+
+    if (!exists) {
+        favorites.push(movie);
+        localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+    }
+}
+
+// remove film-object with filter by ID
+function removeFromFavorites(movie) {
+    let favorites = getFavorites();
+    favorites = favorites.filter((fav) => fav !== movie);
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+}
+
+function createFavouritesListener() {
+    document.querySelectorAll('[data-toggle-favourite]').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const favorBtn = e.target;
+            console.log(favorBtn.dataset.movieId);
+            if (isFavourited(favorBtn.dataset.movieId)) {
+                favorBtn.textContent = '♡';
+                removeFromFavorites(favorBtn.dataset.movieId);
+            } else {
+                favorBtn.textContent = '♥';
+                addToFavorites(favorBtn.dataset.movieId);
+            }
+        });
+    });
 }
 
 /* ------------------------- Main loop ------------------------- */
@@ -132,6 +186,7 @@ document.querySelector('#search-form').addEventListener('submit', async (e) => {
         modal.open();
 
         results.forEach((result) => modal.appendMovie(new Movie(result)));
+        createFavouritesListener();
     }, 500);
 });
 

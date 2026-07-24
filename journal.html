@@ -73,6 +73,17 @@
                 <div class="relative aspect-[2/3] w-full bg-zinc-800 flex items-center justify-center border-b border-zinc-800">
                     <img src="<% imageUrl %>" />
                     <span class="absolute top-2 left-2 bg-black/75 text-yellow-500 font-bold text-xs px-2 py-1 rounded border border-zinc-700 z-10"> ★ <% rating %> </span>
+
+                    <button
+                        data-edit-movie-id="<% id %>"
+                        type="button"
+                        class="absolute right-0 top-0 edit-btn text-zinc-400 hover:text-white transition-colors focus:outline-none p-1"
+                        title="Eintrag bearbeiten"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5 fill-current">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.21a1 1 0 0 0 0-1.42l-2.34-2.34a1 1 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z" />
+                        </svg>
+                    </button>
                 </div>
 
                 <div class="p-4 flex flex-col justify-between flex-grow">
@@ -98,4 +109,19 @@
         <!----- JS Main ----->
         <script src="journal.js"></script>
     </body>
+
+    <script id="modal-tmpl" type="text/html">
+        <aside id="movie-details" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-zinc-900 rounded-lg border border-zinc-700 w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
+                <header class="flex justify-between items-center p-6 border-b border-zinc-700">
+                    <h2 class="text-2xl font-bold text-white"><% title %></h2>
+                    <button type="button" id="close-modal" class="cursor-pointer text-zinc-400 hover:text-white text-2xl transition">✕</button>
+                </header>
+
+                <div class="overflow-y-auto flex-1 p-6">
+                    <textarea name="message" class="p-6 text-zinc-100 bg-zinc-800 rounded-lg w-full h-64"></textarea>
+                </div>
+            </div>
+        </aside>
+    </script>
 </html>

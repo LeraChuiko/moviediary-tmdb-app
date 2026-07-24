@@ -163,6 +163,35 @@ function createFavouritesListener() {
             }
         });
     });
+
+    // listener for clicking on a video edit button and display edit modal
+    document.querySelectorAll('[data-edit-movie-id]').forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            let response = await fetch(`https://api.themoviedb.org/3/movie/${btn.dataset.editMovieId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            response = await response.json();
+
+            const temp = document.createElement('div');
+            temp.innerHTML = document.querySelector('#modal-tmpl').innerHTML.replace('<% title %>', response.name ? responsse.name : response.title);
+
+            const dom = temp.firstChild.nextSibling;
+            document.querySelector('body').appendChild(dom);
+            document.querySelector('body #movie-details textarea').value = localStorage.getItem('notes-' + response.id) || '';
+            document.querySelector('body #close-modal').addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector('body #movie-details').remove();
+            });
+            document.querySelector('body #movie-details textarea').addEventListener('input', function (e) {
+                localStorage.setItem('notes-' + response.id, e.target.value);
+            });
+        });
+    });
 }
 
 /* ------------------------- Main loop ------------------------- */
